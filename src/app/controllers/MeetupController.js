@@ -56,13 +56,6 @@ class MeetupController {
     return res.json(meetup);
   }
 
-  async index(req, res) {
-    const id = req.userId;
-    const meetups = await Meetup.findAll({ where: { user_id: id } });
-
-    res.json(meetups);
-  }
-
   async destroy(req, res) {
     const { id } = req.params;
     const meetup = await Meetup.findOne({ where: { id, user_id: req.userId } });
