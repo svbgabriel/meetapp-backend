@@ -26,6 +26,7 @@ routes.put('/meetups/:id', MeetupController.update);
 routes.delete('/meetups/:id', MeetupController.destroy);
 
 routes.post('/enrollments/:id', EnrollmentController.store);
+routes.get('/enrollments', EnrollmentController.index);
 
 routes.get('/schedules', ScheduleController.index);
 

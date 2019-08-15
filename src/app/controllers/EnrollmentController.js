@@ -1,4 +1,5 @@
 import { isBefore } from 'date-fns';
+import { Op } from 'sequelize';
 import Enrollment from '../models/Enrollment';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
@@ -69,6 +70,28 @@ class EnrollmentController {
     });
 
     return res.json(enrollment);
+  }
+
+  async index(req, res) {
+    const enrolled_id = req.userId;
+
+    const enrollments = await Enrollment.findAll({
+      where: { enrolled_id },
+      include: [
+        {
+          model: Meetup,
+          as: 'meetup',
+          where: {
+            date: {
+              [Op.gt]: new Date(),
+            },
+          },
+        },
+      ],
+      order: [[{ model: Meetup, as: 'meetup' }, 'date', 'asc']],
+    });
+
+    return res.json(enrollments);
   }
 }
 
