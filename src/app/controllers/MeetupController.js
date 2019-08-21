@@ -8,6 +8,7 @@ import {
 import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
+import File from '../models/File';
 
 class MeetupController {
   async store(req, res) {
@@ -109,6 +110,21 @@ class MeetupController {
     await meetup.destroy();
 
     return res.send();
+  }
+
+  async show(req, res) {
+    const { id } = req.params;
+    const meetup = await Meetup.findByPk(id, {
+      include: [
+        { model: File, as: 'banner', attributes: ['url', 'id', 'path'] },
+      ],
+    });
+
+    if (!meetup) {
+      return res.status(401).json({ error: `Meetup ID: ${id} not found` });
+    }
+
+    return res.json(meetup);
   }
 }
 
