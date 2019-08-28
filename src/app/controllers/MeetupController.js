@@ -84,6 +84,7 @@ class MeetupController {
       offset: (page - 1) * 10,
       include: [
         { model: User, as: 'organizer', attributes: ['name', 'email'] },
+        { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
       ],
     });
 
