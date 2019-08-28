@@ -72,7 +72,7 @@ class MeetupController {
       return res.status(400).json({ error: 'Invalid date' });
     }
 
-    const searchDate = parseISO(date);
+    const searchDate = Number(date);
     const meetups = await Meetup.findAll({
       where: {
         date: {
