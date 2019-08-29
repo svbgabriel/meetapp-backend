@@ -5,6 +5,7 @@ import Meetup from '../models/Meetup';
 import User from '../models/User';
 import EnrollmentMail from '../jobs/EnrollmentMail';
 import Queue from '../../lib/Queue';
+import File from '../models/File';
 
 class EnrollmentController {
   async store(req, res) {
@@ -86,6 +87,10 @@ class EnrollmentController {
               [Op.gt]: new Date(),
             },
           },
+          include: [
+            { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
+            { model: User, as: 'organizer', attributes: ['id', 'name'] },
+          ],
         },
       ],
       order: [[{ model: Meetup, as: 'meetup' }, 'date', 'asc']],
