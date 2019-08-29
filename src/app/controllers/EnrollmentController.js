@@ -98,6 +98,27 @@ class EnrollmentController {
 
     return res.json(enrollments);
   }
+
+  async destroy(req, res) {
+    const { id: meetup_id } = req.params;
+    const enrolled_id = req.userId;
+
+    // Procura o cadastro no Meetup
+    const enrollment = await Enrollment.findOne({
+      where: { enrolled_id, meetup_id },
+    });
+
+    if (!enrollment) {
+      return res
+        .status(401)
+        .json({ error: 'Enrollment not found for this user and Meetup' });
+    }
+
+    // Remove o Meetup
+    await enrollment.destroy();
+
+    return res.send();
+  }
 }
 
 export default new EnrollmentController();
