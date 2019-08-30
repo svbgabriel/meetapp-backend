@@ -9,6 +9,7 @@ import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
+import Enrollment from '../models/Enrollment';
 
 class MeetupController {
   async store(req, res) {
@@ -88,7 +89,31 @@ class MeetupController {
       ],
     });
 
-    return res.json(meetups);
+    const enrollments = await Enrollment.findAll({
+      where: { enrolled_id: req.userId },
+      include: [
+        {
+          model: Meetup,
+          as: 'meetup',
+          where: {
+            date: {
+              [Op.gt]: new Date(),
+            },
+          },
+        },
+      ],
+    });
+
+    const data = meetups.map(meetup => {
+      const isEnrolled = !!enrollments.find(
+        enrollment => enrollment.meetup_id === meetup.id
+      );
+      const json = meetup.toJSON();
+      json.isEnrolled = isEnrolled;
+      return json;
+    });
+
+    return res.json(data);
   }
 
   async destroy(req, res) {
